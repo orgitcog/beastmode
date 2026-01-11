@@ -1,0 +1,6 @@
+embedding: false
+model_path: llamacpp/models/SmolLM2-135M-Instruct-Q4_K_M/model.gguf
+model_sha256: ed5fa30c487b282ec156c29062f1222e5c20875a944ac98289dbd242e947f747
+model_size_bytes: 105454144
+name: SmolLM2-135M-Instruct-Q4_K_M
+size_bytes: 105454144

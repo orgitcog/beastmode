@@ -2,6 +2,7 @@
 
 # Set Beast Mode home directory
 export BEASTMODE_HOME="$HOME/beastmode"
+export GODMODE_HOME="$HOME/.godmode"
 
 # Add Beast Mode scripts to PATH
 export PATH="$BEASTMODE_HOME/scripts:$PATH"
@@ -26,6 +27,18 @@ alias azsh='python3 $BEASTMODE_HOME/scripts/azure_shell.py interactive'
 
 # Org Sync toolkit
 alias org-sync='python3 $BEASTMODE_HOME/scripts/org_sync_toolkit.py'
+
+# GodChat - AI-Powered Shell
+alias godchat='python3 $BEASTMODE_HOME/scripts/godchat.py'
+alias gc='python3 $BEASTMODE_HOME/scripts/godchat.py'
+alias ai='python3 $BEASTMODE_HOME/scripts/godchat.py'
+
+# Llama Server Management
+alias llama-server='python3 $BEASTMODE_HOME/scripts/llama_server.py'
+alias llama-start='python3 $BEASTMODE_HOME/scripts/llama_server.py start'
+alias llama-stop='python3 $BEASTMODE_HOME/scripts/llama_server.py stop'
+alias llama-status='python3 $BEASTMODE_HOME/scripts/llama_server.py status'
+alias llama-download='python3 $BEASTMODE_HOME/scripts/llama_server.py download'
 
 # Quick commands
 alias graph-users='python3 $BEASTMODE_HOME/scripts/graph_explorer.py users'
