@@ -1,0 +1,16 @@
+# Beast Mode Environment Configuration
+
+# Set Beast Mode home directory
+export BEASTMODE_HOME="$HOME/beastmode"
+
+# Add Beast Mode scripts to PATH
+export PATH="$BEASTMODE_HOME/scripts:$PATH"
+
+# Alias for quick access
+alias beastmode='python3 $BEASTMODE_HOME/scripts/beastmode.py'
+alias bm='python3 $BEASTMODE_HOME/scripts/beastmode.py'
+
+# Show welcome message on first login
+if [ -f "$BEASTMODE_HOME/welcome.sh" ]; then
+    source "$BEASTMODE_HOME/welcome.sh"
+fi
