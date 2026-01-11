@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+<!-- 
+  GitHub Operations - AIML Patterns
+  God Mode / Beast Mode Infrastructure Automation
+  
+  These patterns map natural language commands to GitHub Actions workflows
+  for repository, organization, team, and workflow management.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- REPOSITORY OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE REPO *</pattern>
+  <template>
+    <action workflow="github-create-repo" inputs='{"name": "<star/>"}'/>
+    Creating repository: <star/>
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE REPOSITORY *</pattern>
+  <template>
+    <srai>CREATE REPO <star/></srai>
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE REPO * IN *</pattern>
+  <template>
+    <action workflow="github-create-repo" inputs='{"name": "<star index="1"/>", "org": "<star index="2"/>"}'/>
+    Creating repository <star index="1"/> in organization <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * REPOS</pattern>
+  <template>
+    <action workflow="github-bulk-repos" inputs='{"count": "<star/>", "org": "orgitcog"}'/>
+    Creating <star/> repositories...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * REPOS IN *</pattern>
+  <template>
+    <action workflow="github-bulk-repos" inputs='{"count": "<star index="1"/>", "org": "<star index="2"/>"}'/>
+    Creating <star index="1"/> repositories in <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * REPOS FOR *</pattern>
+  <template>
+    <srai>CREATE <star index="1"/> REPOS IN <star index="2"/></srai>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST REPOS</pattern>
+  <template>
+    <action workflow="github-list-repos" inputs='{}'/>
+    Fetching repositories...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST REPOS IN *</pattern>
+  <template>
+    <action workflow="github-list-repos" inputs='{"org": "<star/>"}'/>
+    Fetching repositories in <star/>...
+  </template>
+</category>
+
+<category>
+  <pattern>DELETE REPO *</pattern>
+  <template>
+    <confirm>
+      ⚠️ WARNING: You are about to delete repository: <star/>
+      This action is IRREVERSIBLE. All code, issues, and history will be lost.
+      
+      Are you absolutely sure?
+    </confirm>
+    <action workflow="github-delete-repo" inputs='{"name": "<star/>"}'/>
+  </template>
+</category>
+
+<category>
+  <pattern>CLONE REPO *</pattern>
+  <template>
+    Cloning repository: <star/>
+    
+    Run: gh repo clone <star/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ORGANIZATION OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE ORG *</pattern>
+  <template>
+    <action workflow="github-create-org" inputs='{"name": "<star/>"}'/>
+    Creating organization: <star/>
+    
+    Note: Organization creation may require GitHub Enterprise or manual approval.
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE ORGANIZATION *</pattern>
+  <template>
+    <srai>CREATE ORG <star/></srai>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST ORGS</pattern>
+  <template>
+    <action workflow="github-list-orgs" inputs='{}'/>
+    Fetching organizations...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST ORGANIZATIONS</pattern>
+  <template>
+    <srai>LIST ORGS</srai>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TEAM OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE TEAM * IN *</pattern>
+  <template>
+    <action workflow="github-create-team" inputs='{"name": "<star index="1"/>", "org": "<star index="2"/>"}'/>
+    Creating team <star index="1"/> in <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>ADD * TO TEAM *</pattern>
+  <template>
+    <action workflow="github-add-to-team" inputs='{"user": "<star index="1"/>", "team": "<star index="2"/>"}'/>
+    Adding <star index="1"/> to team <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST TEAMS IN *</pattern>
+  <template>
+    <action workflow="github-list-teams" inputs='{"org": "<star/>"}'/>
+    Fetching teams in <star/>...
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- WORKFLOW OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>RUN WORKFLOW *</pattern>
+  <template>
+    <action workflow="<star/>" inputs='{}'/>
+    Triggering workflow: <star/>
+  </template>
+</category>
+
+<category>
+  <pattern>RUN WORKFLOW * WITH *</pattern>
+  <template>
+    <action workflow="<star index="1"/>" inputs='<star index="2"/>'/>
+    Triggering workflow: <star index="1"/> with inputs
+  </template>
+</category>
+
+<category>
+  <pattern>LIST WORKFLOWS</pattern>
+  <template>
+    <action workflow="github-list-workflows" inputs='{}'/>
+    Fetching available workflows...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST WORKFLOWS IN *</pattern>
+  <template>
+    <action workflow="github-list-workflows" inputs='{"repo": "<star/>"}'/>
+    Fetching workflows in <star/>...
+  </template>
+</category>
+
+<category>
+  <pattern>CANCEL WORKFLOW *</pattern>
+  <template>
+    <action workflow="github-cancel-workflow" inputs='{"run_id": "<star/>"}'/>
+    Cancelling workflow run: <star/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ISSUE OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE ISSUE * IN *</pattern>
+  <template>
+    <action workflow="github-create-issue" inputs='{"title": "<star index="1"/>", "repo": "<star index="2"/>"}'/>
+    Creating issue in <star index="2"/>: <star index="1"/>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST ISSUES IN *</pattern>
+  <template>
+    <action workflow="github-list-issues" inputs='{"repo": "<star/>"}'/>
+    Fetching issues in <star/>...
+  </template>
+</category>
+
+<category>
+  <pattern>CLOSE ISSUE * IN *</pattern>
+  <template>
+    <action workflow="github-close-issue" inputs='{"issue": "<star index="1"/>", "repo": "<star index="2"/>"}'/>
+    Closing issue #<star index="1"/> in <star index="2"/>...
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- PULL REQUEST OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE PR * IN *</pattern>
+  <template>
+    <action workflow="github-create-pr" inputs='{"title": "<star index="1"/>", "repo": "<star index="2"/>"}'/>
+    Creating pull request in <star index="2"/>: <star index="1"/>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST PRS IN *</pattern>
+  <template>
+    <action workflow="github-list-prs" inputs='{"repo": "<star/>"}'/>
+    Fetching pull requests in <star/>...
+  </template>
+</category>
+
+<category>
+  <pattern>MERGE PR * IN *</pattern>
+  <template>
+    <confirm>
+      Merge pull request #<star index="1"/> in <star index="2"/>?
+    </confirm>
+    <action workflow="github-merge-pr" inputs='{"pr": "<star index="1"/>", "repo": "<star index="2"/>"}'/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- DEPLOYMENT OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>DEPLOY *</pattern>
+  <template>
+    <choice id="environment">
+      Where would you like to deploy <star/>?
+      <option value="production">Production</option>
+      <option value="staging">Staging</option>
+      <option value="development">Development</option>
+    </choice>
+  </template>
+</category>
+
+<category>
+  <pattern>DEPLOY * TO PRODUCTION</pattern>
+  <template>
+    <confirm>
+      ⚠️ PRODUCTION DEPLOYMENT
+      
+      You are about to deploy <star/> to PRODUCTION.
+      This will affect all users.
+      
+      Proceed?
+    </confirm>
+    <action workflow="deploy-production" inputs='{"app": "<star/>"}'/>
+  </template>
+</category>
+
+<category>
+  <pattern>DEPLOY * TO STAGING</pattern>
+  <template>
+    <action workflow="deploy-staging" inputs='{"app": "<star/>"}'/>
+    Deploying <star/> to staging...
+  </template>
+</category>
+
+<category>
+  <pattern>ROLLBACK *</pattern>
+  <template>
+    <confirm>
+      Rollback <star/> to previous version?
+    </confirm>
+    <action workflow="rollback-production" inputs='{"app": "<star/>"}'/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- BULK OPERATIONS (GOD MODE) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>SETUP * ORGS WITH * REPOS EACH</pattern>
+  <template>
+    <think>
+      <set name="org_count"><star index="1"/></set>
+      <set name="repo_count"><star index="2"/></set>
+    </think>
+    <confirm>
+      🚀 BULK GITHUB SETUP
+      
+      This will create:
+      • <star index="1"/> organizations
+      • <star index="2"/> repositories per organization
+      
+      Total: <compute><star index="1"/> * <star index="2"/></compute> repositories
+      
+      Proceed?
+    </confirm>
+    <action workflow="github-bulk-setup" inputs='{
+      "orgs": "<star index="1"/>",
+      "repos_per_org": "<star index="2"/>"
+    }'/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- HELP -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>GITHUB HELP</pattern>
+  <template>
+    📘 GitHub Commands:
+    
+    REPOSITORIES:
+    • create repo [name]
+    • create repo [name] in [org]
+    • create [n] repos in [org]
+    • list repos
+    • delete repo [name]
+    
+    ORGANIZATIONS:
+    • create org [name]
+    • list orgs
+    
+    TEAMS:
+    • create team [name] in [org]
+    • add [user] to team [team]
+    • list teams in [org]
+    
+    WORKFLOWS:
+    • run workflow [name]
+    • list workflows
+    • cancel workflow [id]
+    
+    ISSUES:
+    • create issue [title] in [repo]
+    • list issues in [repo]
+    • close issue [id] in [repo]
+    
+    PULL REQUESTS:
+    • create pr [title] in [repo]
+    • list prs in [repo]
+    • merge pr [id] in [repo]
+    
+    DEPLOYMENT:
+    • deploy [app]
+    • deploy [app] to production
+    • deploy [app] to staging
+    • rollback [app]
+    
+    BULK:
+    • setup [n] orgs with [m] repos each
+  </template>
+</category>
+
+<category>
+  <pattern>HELP GITHUB</pattern>
+  <template>
+    <srai>GITHUB HELP</srai>
+  </template>
+</category>
+
+</aiml>

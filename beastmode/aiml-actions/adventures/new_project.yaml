@@ -1,0 +1,208 @@
+# New Project Adventure
+# A guided workflow for setting up a complete project
+
+id: new_project
+title: "🚀 New Project Setup"
+description: "Create a complete project with repository, CI/CD, and infrastructure"
+triggers:
+  - "new project"
+  - "create project"
+  - "start project"
+  - "setup project"
+
+variables:
+  project_name: ""
+  project_type: ""
+  org: "orgitcog"
+  include_ci: true
+  include_docs: true
+  azure_integration: false
+
+steps:
+  start:
+    text: |
+      🚀 Welcome to the New Project Adventure!
+      
+      I'll guide you through setting up a complete project with:
+      • GitHub repository
+      • CI/CD pipeline
+      • Documentation
+      • Optional Azure AD integration
+      
+      Let's begin! What would you like to name your project?
+    input:
+      type: text
+      variable: project_name
+      prompt: "Project name"
+    next: choose_type
+
+  choose_type:
+    text: |
+      Great! Your project will be called: **{project_name}**
+      
+      What type of project is this?
+    choices:
+      - value: web
+        label: "🌐 Web Application (React/Node.js)"
+        next: choose_features
+      - value: api
+        label: "⚡ API Service (FastAPI/Express)"
+        next: choose_features
+      - value: library
+        label: "📦 Library/Package"
+        next: choose_features
+      - value: infra
+        label: "🏗️ Infrastructure (Terraform/Pulumi)"
+        next: choose_features
+      - value: docs
+        label: "📚 Documentation Site"
+        next: choose_features
+
+  choose_features:
+    text: |
+      Setting up a **{project_type}** project.
+      
+      Which features would you like to include?
+    choices:
+      - value: full
+        label: "✨ Full Setup (CI/CD + Docs + Azure)"
+        set:
+          include_ci: true
+          include_docs: true
+          azure_integration: true
+        next: confirm_azure
+      - value: standard
+        label: "📋 Standard (CI/CD + Docs)"
+        set:
+          include_ci: true
+          include_docs: true
+          azure_integration: false
+        next: confirm_setup
+      - value: minimal
+        label: "⚡ Minimal (Just the repo)"
+        set:
+          include_ci: false
+          include_docs: false
+          azure_integration: false
+        next: confirm_setup
+
+  confirm_azure:
+    text: |
+      Azure AD Integration selected!
+      
+      This will:
+      • Create an Azure AD application for {project_name}
+      • Set up service principal for CI/CD
+      • Configure OIDC authentication
+      
+      Which Azure AD tenant should I use?
+    choices:
+      - value: default
+        label: "Use default tenant"
+        next: confirm_setup
+      - value: new
+        label: "Create new tenant"
+        next: create_tenant
+      - value: skip
+        label: "Skip Azure integration"
+        set:
+          azure_integration: false
+        next: confirm_setup
+
+  create_tenant:
+    text: |
+      Creating a new Azure AD tenant for {project_name}...
+    action:
+      workflow: azure-create-tenant
+      inputs:
+        name: "{project_name}-tenant"
+    next: confirm_setup
+
+  confirm_setup:
+    text: |
+      📋 Project Configuration Summary
+      ═══════════════════════════════════
+      
+      • **Name:** {project_name}
+      • **Type:** {project_type}
+      • **Organization:** {org}
+      • **CI/CD:** {include_ci}
+      • **Documentation:** {include_docs}
+      • **Azure Integration:** {azure_integration}
+      
+      Ready to create your project?
+    choices:
+      - value: yes
+        label: "✅ Create Project"
+        next: create_repo
+      - value: edit
+        label: "✏️ Edit Configuration"
+        next: start
+      - value: cancel
+        label: "❌ Cancel"
+        next: cancelled
+
+  create_repo:
+    text: |
+      Creating GitHub repository: **{org}/{project_name}**...
+    action:
+      workflow: github-create-repo
+      inputs:
+        name: "{project_name}"
+        org: "{org}"
+    next: setup_ci
+
+  setup_ci:
+    condition: "{include_ci}"
+    text: |
+      Setting up CI/CD pipeline...
+    action:
+      workflow: github-setup-ci
+      inputs:
+        repo: "{org}/{project_name}"
+        type: "{project_type}"
+    next: setup_docs
+
+  setup_docs:
+    condition: "{include_docs}"
+    text: |
+      Creating documentation structure...
+    action:
+      workflow: github-setup-docs
+      inputs:
+        repo: "{org}/{project_name}"
+    next: setup_azure
+
+  setup_azure:
+    condition: "{azure_integration}"
+    text: |
+      Configuring Azure AD integration...
+    action:
+      workflow: azure-create-app
+      inputs:
+        name: "{project_name}"
+    next: complete
+
+  complete:
+    text: |
+      🎉 Project Setup Complete!
+      ═══════════════════════════
+      
+      Your project **{project_name}** is ready!
+      
+      📁 Repository: https://github.com/{org}/{project_name}
+      
+      Next steps:
+      1. Clone: `gh repo clone {org}/{project_name}`
+      2. Install dependencies
+      3. Start coding!
+      
+      Happy building! 🚀
+    end: true
+
+  cancelled:
+    text: |
+      Project creation cancelled.
+      
+      No changes were made. Feel free to start again anytime!
+    end: true

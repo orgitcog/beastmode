@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+<!-- 
+  Core Operations - AIML Patterns
+  God Mode / Beast Mode Infrastructure Automation
+  
+  General patterns for help, status, and system operations.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- GREETINGS & BASICS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>HELLO</pattern>
+  <template>
+    👋 Hello! I'm GodChat, your infrastructure automation assistant.
+    
+    I can help you manage:
+    • Azure AD (tenants, users, groups, apps)
+    • GitHub (repos, orgs, teams, workflows)
+    • Mass provisioning (deploy entire infrastructures)
+    
+    Type "help" for a list of commands, or just tell me what you need!
+  </template>
+</category>
+
+<category>
+  <pattern>HI</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>HEY</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>GOOD MORNING</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>GOOD AFTERNOON</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<category>
+  <pattern>GOOD EVENING</pattern>
+  <template><srai>HELLO</srai></template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- HELP -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>HELP</pattern>
+  <template>
+    🤖 GodChat - Infrastructure Automation Assistant
+    ═══════════════════════════════════════════════
+    
+    QUICK START:
+    • "create 10 users" - Create Azure AD users
+    • "create repo myapp" - Create GitHub repository
+    • "deploy 3 tenants with 5 orgs and 50 users" - Mass provision
+    
+    DETAILED HELP:
+    • "azure help" - Azure AD commands
+    • "github help" - GitHub commands
+    • "adventure help" - Interactive workflows
+    
+    MODES:
+    • "beast mode" - Enable rapid provisioning
+    • "god mode" - Full administrative access
+    
+    TIPS:
+    • Use natural language - I understand context
+    • Ask for confirmation before destructive actions
+    • Type "status" to check system health
+  </template>
+</category>
+
+<category>
+  <pattern>HELP *</pattern>
+  <template>
+    <srai><star/> HELP</srai>
+  </template>
+</category>
+
+<category>
+  <pattern>COMMANDS</pattern>
+  <template><srai>HELP</srai></template>
+</category>
+
+<category>
+  <pattern>WHAT CAN YOU DO</pattern>
+  <template><srai>HELP</srai></template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- ADVENTURE MODE -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>ADVENTURE HELP</pattern>
+  <template>
+    🎮 Adventure Mode - Choose Your Own DevOps
+    ═══════════════════════════════════════════
+    
+    Adventures are interactive, guided workflows that walk you through
+    complex operations step by step.
+    
+    AVAILABLE ADVENTURES:
+    • "new project" - Set up a complete project
+    • "incident" - Guided incident response
+    • "onboarding" - New team member setup
+    
+    COMMANDS:
+    • "start [adventure]" - Begin an adventure
+    • "cancel" - Exit current adventure
+    • Type a number or letter to make choices
+    
+    Adventures trigger real workflows - you're in control!
+  </template>
+</category>
+
+<category>
+  <pattern>START ADVENTURE *</pattern>
+  <template>
+    Starting adventure: <star/>
+    
+    [Adventure mode activated - follow the prompts!]
+  </template>
+</category>
+
+<category>
+  <pattern>NEW PROJECT</pattern>
+  <template>
+    🚀 Starting New Project Adventure...
+    
+    [This will guide you through setting up a complete project]
+  </template>
+</category>
+
+<category>
+  <pattern>INCIDENT</pattern>
+  <template>
+    🚨 Starting Incident Response Adventure...
+    
+    [This will guide you through incident response procedures]
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- STATUS & HEALTH -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>STATUS</pattern>
+  <template>
+    <action workflow="health-check" inputs='{}'/>
+    📊 System Status Check
+    ═══════════════════════
+    
+    Running health checks...
+  </template>
+</category>
+
+<category>
+  <pattern>HEALTH CHECK</pattern>
+  <template><srai>STATUS</srai></template>
+</category>
+
+<category>
+  <pattern>CHECK STATUS</pattern>
+  <template><srai>STATUS</srai></template>
+</category>
+
+<category>
+  <pattern>PING</pattern>
+  <template>
+    🏓 Pong!
+    
+    GodChat is online and ready.
+    Azure AD: Connected
+    GitHub: Connected
+    LLM: <condition name="llm_status"><li value="online">Online</li><li>Checking...</li></condition>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- MODE SWITCHING -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>BEAST MODE</pattern>
+  <template>
+    <think><set name="mode">beast</set></think>
+    🦁 BEAST MODE ACTIVATED
+    ═══════════════════════
+    
+    You now have access to rapid provisioning commands:
+    • Mass user creation
+    • Bulk repository setup
+    • Multi-tenant deployment
+    
+    Use with caution - great power, great responsibility!
+    
+    Quick commands:
+    • "beast mode 3 9 50" = 3 tenants, 9 orgs, 50 users each
+  </template>
+</category>
+
+<category>
+  <pattern>GOD MODE</pattern>
+  <template>
+    <think><set name="mode">god</set></think>
+    ⚡ GOD MODE ACTIVATED
+    ═══════════════════════
+    
+    Full administrative access enabled:
+    • All Azure AD operations
+    • All GitHub operations
+    • Mass provisioning
+    • No confirmation prompts (use carefully!)
+    
+    "With great power comes great responsibility."
+  </template>
+</category>
+
+<category>
+  <pattern>NORMAL MODE</pattern>
+  <template>
+    <think><set name="mode">normal</set></think>
+    ✅ Normal mode restored.
+    
+    Confirmation prompts re-enabled for destructive operations.
+  </template>
+</category>
+
+<category>
+  <pattern>SAFE MODE</pattern>
+  <template>
+    <think><set name="mode">safe</set></think>
+    🛡️ Safe mode enabled.
+    
+    All operations will require explicit confirmation.
+    No destructive actions will be executed automatically.
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- LEARNING -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>LEARN *</pattern>
+  <template>
+    <learn-action pattern="<star/>" workflow="custom"/>
+    I'll try to learn that pattern!
+    
+    When you say something similar, I'll remember this context.
+  </template>
+</category>
+
+<category>
+  <pattern>FORGET *</pattern>
+  <template>
+    Removing learned pattern: <star/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- VARIABLES & CONTEXT -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>SET * TO *</pattern>
+  <template>
+    <think><set name="<star index="1"/>"><star index="2"/></set></think>
+    Set <star index="1"/> = <star index="2"/>
+  </template>
+</category>
+
+<category>
+  <pattern>WHAT IS *</pattern>
+  <template>
+    <get name="<star/>"/>
+    <condition name="<star/>">
+      <li value="">I don't have a value for "<star/>" yet.</li>
+      <li><star/> = <get name="<star/>"/></li>
+    </condition>
+  </template>
+</category>
+
+<category>
+  <pattern>USE ORG *</pattern>
+  <template>
+    <think><set name="default_org"><star/></set></think>
+    Default organization set to: <star/>
+    
+    Future commands will use this org unless specified otherwise.
+  </template>
+</category>
+
+<category>
+  <pattern>USE TENANT *</pattern>
+  <template>
+    <think><set name="default_tenant"><star/></set></think>
+    Default tenant set to: <star/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- CONFIRMATION RESPONSES -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>YES</pattern>
+  <template>
+    <condition name="pending_action">
+      <li value="">I don't have a pending action. What would you like to do?</li>
+      <li>Confirmed! Executing...</li>
+    </condition>
+  </template>
+</category>
+
+<category>
+  <pattern>NO</pattern>
+  <template>
+    <think><set name="pending_action"></set></think>
+    Action cancelled.
+  </template>
+</category>
+
+<category>
+  <pattern>CANCEL</pattern>
+  <template>
+    <think><set name="pending_action"></set></think>
+    Operation cancelled.
+  </template>
+</category>
+
+<category>
+  <pattern>CONFIRM</pattern>
+  <template><srai>YES</srai></template>
+</category>
+
+<category>
+  <pattern>ABORT</pattern>
+  <template><srai>NO</srai></template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- FALLBACK -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>*</pattern>
+  <template>
+    <llm>
+      The user said: <star/>
+      
+      Help them with infrastructure automation tasks.
+    </llm>
+  </template>
+</category>
+
+</aiml>

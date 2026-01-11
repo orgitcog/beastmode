@@ -1,0 +1,446 @@
+# Incident Response Adventure
+# A guided workflow for handling production incidents
+
+id: incident
+title: "🚨 Incident Response"
+description: "Guided incident response and recovery workflow"
+triggers:
+  - "incident"
+  - "emergency"
+  - "production down"
+  - "outage"
+  - "system down"
+  - "help production"
+
+variables:
+  severity: ""
+  affected_service: ""
+  incident_id: ""
+  root_cause: ""
+  resolution: ""
+
+steps:
+  start:
+    text: |
+      🚨 INCIDENT RESPONSE INITIATED
+      ═══════════════════════════════
+      
+      Stay calm. Let's work through this systematically.
+      
+      First, what is the severity of this incident?
+    choices:
+      - value: critical
+        label: "🔴 CRITICAL - Complete service outage"
+        set:
+          severity: "critical"
+        next: identify_service
+      - value: high
+        label: "🟠 HIGH - Major functionality impaired"
+        set:
+          severity: "high"
+        next: identify_service
+      - value: medium
+        label: "🟡 MEDIUM - Partial degradation"
+        set:
+          severity: "medium"
+        next: identify_service
+      - value: low
+        label: "🟢 LOW - Minor issue"
+        set:
+          severity: "low"
+        next: identify_service
+
+  identify_service:
+    text: |
+      Severity: **{severity}**
+      
+      Which service is affected?
+    choices:
+      - value: beastmode
+        label: "Beast Mode WebVM"
+        set:
+          affected_service: "beastmode"
+        next: check_status
+      - value: graph-explorer
+        label: "Graph Explorer"
+        set:
+          affected_service: "graph-explorer"
+        next: check_status
+      - value: azure
+        label: "Azure AD Integration"
+        set:
+          affected_service: "azure-ad"
+        next: check_status
+      - value: github
+        label: "GitHub Actions/Workflows"
+        set:
+          affected_service: "github"
+        next: check_status
+      - value: other
+        label: "Other service"
+        next: specify_service
+
+  specify_service:
+    text: |
+      Please specify the affected service:
+    input:
+      type: text
+      variable: affected_service
+      prompt: "Service name"
+    next: check_status
+
+  check_status:
+    text: |
+      Running health checks on **{affected_service}**...
+    action:
+      workflow: health-check
+      inputs:
+        services: "{affected_service}"
+    next: assess_impact
+
+  assess_impact:
+    text: |
+      📊 Impact Assessment
+      
+      Based on the health check, what is the current impact?
+    choices:
+      - value: total
+        label: "💀 Total outage - no users can access"
+        next: immediate_action
+      - value: partial
+        label: "⚠️ Partial outage - some users affected"
+        next: investigate
+      - value: degraded
+        label: "🐌 Degraded performance"
+        next: investigate
+      - value: resolved
+        label: "✅ Issue appears resolved"
+        next: verify_resolution
+
+  immediate_action:
+    text: |
+      🚨 CRITICAL: Total outage detected
+      
+      Immediate action required. What would you like to do?
+    choices:
+      - value: rollback
+        label: "⏪ Rollback to last known good state"
+        next: execute_rollback
+      - value: restart
+        label: "🔄 Restart affected services"
+        next: execute_restart
+      - value: failover
+        label: "🔀 Failover to backup"
+        next: execute_failover
+      - value: investigate
+        label: "🔍 Investigate first"
+        next: investigate
+
+  execute_rollback:
+    text: |
+      ⏪ Initiating rollback for **{affected_service}**...
+      
+      This will revert to the last successful deployment.
+    action:
+      workflow: rollback-production
+      inputs:
+        service: "{affected_service}"
+    next: verify_resolution
+
+  execute_restart:
+    text: |
+      🔄 Restarting **{affected_service}**...
+    action:
+      workflow: restart-service
+      inputs:
+        service: "{affected_service}"
+    next: verify_resolution
+
+  execute_failover:
+    text: |
+      🔀 Initiating failover for **{affected_service}**...
+    action:
+      workflow: failover-service
+      inputs:
+        service: "{affected_service}"
+    next: verify_resolution
+
+  investigate:
+    text: |
+      🔍 Investigation Mode
+      
+      Let's gather more information. What would you like to check?
+    choices:
+      - value: logs
+        label: "📜 View recent logs"
+        next: view_logs
+      - value: metrics
+        label: "📊 Check metrics/dashboards"
+        next: view_metrics
+      - value: changes
+        label: "📝 Recent changes/deployments"
+        next: view_changes
+      - value: dependencies
+        label: "🔗 Check dependencies"
+        next: check_dependencies
+
+  view_logs:
+    text: |
+      Fetching recent logs for **{affected_service}**...
+      
+      [Log viewer would open here]
+      
+      Did you find anything in the logs?
+    choices:
+      - value: found
+        label: "✅ Yes, found the issue"
+        next: document_cause
+      - value: nothing
+        label: "❌ No, nothing obvious"
+        next: investigate
+      - value: need_help
+        label: "🆘 Need help interpreting"
+        next: escalate
+
+  view_metrics:
+    text: |
+      Loading metrics dashboard for **{affected_service}**...
+      
+      [Metrics dashboard would open here]
+      
+      Any anomalies detected?
+    choices:
+      - value: found
+        label: "✅ Yes, found anomaly"
+        next: document_cause
+      - value: nothing
+        label: "❌ No anomalies"
+        next: investigate
+      - value: need_help
+        label: "🆘 Need help interpreting"
+        next: escalate
+
+  view_changes:
+    text: |
+      Recent changes to **{affected_service}**:
+      
+      [Would show recent commits/deployments]
+      
+      Was there a recent change that could have caused this?
+    choices:
+      - value: yes
+        label: "✅ Yes, found suspicious change"
+        next: rollback_change
+      - value: no
+        label: "❌ No recent changes"
+        next: investigate
+      - value: unsure
+        label: "🤔 Unsure"
+        next: escalate
+
+  check_dependencies:
+    text: |
+      Checking dependencies for **{affected_service}**...
+      
+      [Would show dependency status]
+      
+      Are all dependencies healthy?
+    choices:
+      - value: all_healthy
+        label: "✅ All dependencies healthy"
+        next: investigate
+      - value: found_issue
+        label: "❌ Found dependency issue"
+        next: document_cause
+      - value: unsure
+        label: "🤔 Unsure"
+        next: escalate
+
+  rollback_change:
+    text: |
+      Would you like to rollback the suspicious change?
+    choices:
+      - value: yes
+        label: "⏪ Yes, rollback"
+        next: execute_rollback
+      - value: no
+        label: "❌ No, investigate more"
+        next: investigate
+
+  document_cause:
+    text: |
+      📝 Document Root Cause
+      
+      Please describe the root cause you identified:
+    input:
+      type: text
+      variable: root_cause
+      prompt: "Root cause"
+    next: choose_resolution
+
+  choose_resolution:
+    text: |
+      Root cause: **{root_cause}**
+      
+      How would you like to resolve this?
+    choices:
+      - value: rollback
+        label: "⏪ Rollback"
+        next: execute_rollback
+      - value: hotfix
+        label: "🔧 Deploy hotfix"
+        next: deploy_hotfix
+      - value: config
+        label: "⚙️ Configuration change"
+        next: config_change
+      - value: manual
+        label: "👷 Manual intervention"
+        next: manual_resolution
+
+  deploy_hotfix:
+    text: |
+      🔧 Deploying hotfix...
+      
+      Please provide the hotfix branch or commit:
+    input:
+      type: text
+      variable: resolution
+      prompt: "Branch/commit"
+    action:
+      workflow: deploy-hotfix
+      inputs:
+        service: "{affected_service}"
+        ref: "{resolution}"
+    next: verify_resolution
+
+  config_change:
+    text: |
+      ⚙️ What configuration change is needed?
+    input:
+      type: text
+      variable: resolution
+      prompt: "Configuration change"
+    next: verify_resolution
+
+  manual_resolution:
+    text: |
+      👷 Please describe the manual steps taken:
+    input:
+      type: text
+      variable: resolution
+      prompt: "Resolution steps"
+    next: verify_resolution
+
+  escalate:
+    text: |
+      🆘 Escalation
+      
+      This incident requires additional expertise.
+      
+      Who should be notified?
+    choices:
+      - value: oncall
+        label: "📟 On-call engineer"
+        next: notify_oncall
+      - value: team
+        label: "👥 Entire team"
+        next: notify_team
+      - value: management
+        label: "👔 Management"
+        next: notify_management
+
+  notify_oncall:
+    text: |
+      📟 Notifying on-call engineer...
+      
+      [Would send PagerDuty/Slack notification]
+      
+      Continue investigating while waiting?
+    choices:
+      - value: yes
+        label: "Yes, continue"
+        next: investigate
+      - value: no
+        label: "No, wait for response"
+        next: waiting
+
+  notify_team:
+    text: |
+      👥 Notifying team...
+      
+      [Would send team notification]
+    next: investigate
+
+  notify_management:
+    text: |
+      👔 Notifying management...
+      
+      [Would send management notification]
+    next: investigate
+
+  waiting:
+    text: |
+      ⏳ Waiting for response...
+      
+      While waiting, would you like to:
+    choices:
+      - value: investigate
+        label: "🔍 Continue investigating"
+        next: investigate
+      - value: document
+        label: "📝 Document findings so far"
+        next: document_cause
+      - value: wait
+        label: "⏳ Just wait"
+        next: waiting
+
+  verify_resolution:
+    text: |
+      ✅ Verifying resolution...
+      
+      Running health checks on **{affected_service}**...
+    action:
+      workflow: health-check
+      inputs:
+        services: "{affected_service}"
+    next: confirm_resolution
+
+  confirm_resolution:
+    text: |
+      Is the service now operational?
+    choices:
+      - value: yes
+        label: "✅ Yes, all clear!"
+        next: complete
+      - value: partial
+        label: "⚠️ Partially resolved"
+        next: investigate
+      - value: no
+        label: "❌ No, still down"
+        next: immediate_action
+
+  complete:
+    text: |
+      🎉 INCIDENT RESOLVED
+      ═══════════════════════
+      
+      **Service:** {affected_service}
+      **Severity:** {severity}
+      **Root Cause:** {root_cause}
+      **Resolution:** {resolution}
+      
+      📋 Post-Incident Tasks:
+      1. Update incident ticket
+      2. Schedule post-mortem
+      3. Document lessons learned
+      4. Update runbooks if needed
+      
+      Great work resolving this incident! 🙌
+    action:
+      workflow: create-incident-report
+      inputs:
+        service: "{affected_service}"
+        severity: "{severity}"
+        root_cause: "{root_cause}"
+        resolution: "{resolution}"
+    end: true

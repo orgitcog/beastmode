@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+<!-- 
+  Azure AD Operations - AIML Patterns
+  God Mode / Beast Mode Infrastructure Automation
+  
+  These patterns map natural language commands to GitHub Actions workflows
+  for Azure AD tenant, user, group, and application management.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- TENANT OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE TENANT *</pattern>
+  <template>
+    <think><set name="tenant_name"><star/></set></think>
+    <action workflow="azure-create-tenant" inputs='{"name": "<star/>"}'/>
+    Creating Azure AD tenant: <star/>
+    
+    This will provision a new Azure AD tenant with default configuration.
+    Note: Requires Azure subscription-level permissions.
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * TENANTS</pattern>
+  <template>
+    <think><set name="tenant_count"><star/></set></think>
+    <confirm>
+      You're about to create <star/> Azure AD tenants.
+      This is a significant operation. Proceed?
+    </confirm>
+    <action workflow="azure-bulk-tenants" inputs='{"count": "<star/>"}'/>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST TENANTS</pattern>
+  <template>
+    <action workflow="azure-list-tenants" inputs='{}'/>
+    Fetching list of Azure AD tenants...
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- USER OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE USER *</pattern>
+  <template>
+    <action workflow="azure-create-users" inputs='{"count": "1", "prefix": "<star/>"}'/>
+    Creating user: <star/>
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * USERS</pattern>
+  <template>
+    <action workflow="azure-create-users" inputs='{"count": "<star/>"}'/>
+    Creating <star/> users in Azure AD...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * USERS IN *</pattern>
+  <template>
+    <action workflow="azure-create-users" inputs='{"count": "<star index="1"/>", "domain": "<star index="2"/>"}'/>
+    Creating <star index="1"/> users in <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * USERS WITH PREFIX *</pattern>
+  <template>
+    <action workflow="azure-create-users" inputs='{"count": "<star index="1"/>", "prefix": "<star index="2"/>"}'/>
+    Creating <star index="1"/> users with prefix "<star index="2"/>"...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST USERS</pattern>
+  <template>
+    <action workflow="azure-list-users" inputs='{}'/>
+    Fetching Azure AD users...
+  </template>
+</category>
+
+<category>
+  <pattern>DELETE USER *</pattern>
+  <template>
+    <confirm>
+      Are you sure you want to delete user: <star/>?
+      This action cannot be undone.
+    </confirm>
+    <action workflow="azure-delete-user" inputs='{"user": "<star/>"}'/>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- GROUP OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE GROUP *</pattern>
+  <template>
+    <action workflow="azure-create-groups" inputs='{"count": "1", "prefix": "<star/>"}'/>
+    Creating group: <star/>
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * GROUPS</pattern>
+  <template>
+    <action workflow="azure-create-groups" inputs='{"count": "<star/>"}'/>
+    Creating <star/> groups in Azure AD...
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE * GROUPS WITH PREFIX *</pattern>
+  <template>
+    <action workflow="azure-create-groups" inputs='{"count": "<star index="1"/>", "prefix": "<star index="2"/>"}'/>
+    Creating <star index="1"/> groups with prefix "<star index="2"/>"...
+  </template>
+</category>
+
+<category>
+  <pattern>ADD * TO GROUP *</pattern>
+  <template>
+    <action workflow="azure-add-to-group" inputs='{"user": "<star index="1"/>", "group": "<star index="2"/>"}'/>
+    Adding <star index="1"/> to group <star index="2"/>...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST GROUPS</pattern>
+  <template>
+    <action workflow="azure-list-groups" inputs='{}'/>
+    Fetching Azure AD groups...
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- APPLICATION OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>CREATE APP *</pattern>
+  <template>
+    <action workflow="azure-create-app" inputs='{"name": "<star/>"}'/>
+    Creating Azure AD application: <star/>
+  </template>
+</category>
+
+<category>
+  <pattern>CREATE APPLICATION *</pattern>
+  <template>
+    <srai>CREATE APP <star/></srai>
+  </template>
+</category>
+
+<category>
+  <pattern>REGISTER APP *</pattern>
+  <template>
+    <srai>CREATE APP <star/></srai>
+  </template>
+</category>
+
+<category>
+  <pattern>LIST APPS</pattern>
+  <template>
+    <action workflow="azure-list-apps" inputs='{}'/>
+    Fetching Azure AD applications...
+  </template>
+</category>
+
+<category>
+  <pattern>LIST APPLICATIONS</pattern>
+  <template>
+    <srai>LIST APPS</srai>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- MASS PROVISIONING (GOD MODE) -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>DEPLOY * TENANTS WITH * ORGS AND * USERS</pattern>
+  <template>
+    <think>
+      <set name="tenants"><star index="1"/></set>
+      <set name="orgs"><star index="2"/></set>
+      <set name="users"><star index="3"/></set>
+    </think>
+    <confirm>
+      🚀 MASS PROVISIONING REQUEST
+      
+      This will create:
+      • <star index="1"/> Azure AD tenants
+      • <star index="2"/> organizations per tenant
+      • <star index="3"/> users per organization
+      
+      Total resources:
+      • <compute><star index="1"/> * <star index="2"/></compute> organizations
+      • <compute><star index="1"/> * <star index="2"/> * <star index="3"/></compute> users
+      
+      ⚠️ This is a significant operation. Proceed?
+    </confirm>
+    <action workflow="mass-provision" inputs='{
+      "tenants": "<star index="1"/>",
+      "orgs": "<star index="2"/>",
+      "users": "<star index="3"/>"
+    }'/>
+    Initiating mass provisioning...
+  </template>
+</category>
+
+<category>
+  <pattern>PROVISION * TENANTS * ORGS * USERS</pattern>
+  <template>
+    <srai>DEPLOY <star index="1"/> TENANTS WITH <star index="2"/> ORGS AND <star index="3"/> USERS</srai>
+  </template>
+</category>
+
+<category>
+  <pattern>BEAST MODE * * *</pattern>
+  <template>
+    <srai>DEPLOY <star index="1"/> TENANTS WITH <star index="2"/> ORGS AND <star index="3"/> USERS</srai>
+  </template>
+</category>
+
+<category>
+  <pattern>GOD MODE * * *</pattern>
+  <template>
+    <srai>DEPLOY <star index="1"/> TENANTS WITH <star index="2"/> ORGS AND <star index="3"/> USERS</srai>
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SYNC OPERATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>SYNC AZURE TO GITHUB</pattern>
+  <template>
+    <action workflow="sync-azure-github" inputs='{"resource": "all"}'/>
+    Synchronizing Azure AD to GitHub...
+  </template>
+</category>
+
+<category>
+  <pattern>SYNC * TO GITHUB</pattern>
+  <template>
+    <action workflow="sync-azure-github" inputs='{"resource": "<star/>"}'/>
+    Synchronizing <star/> to GitHub...
+  </template>
+</category>
+
+<category>
+  <pattern>SYNC USERS TO GITHUB</pattern>
+  <template>
+    <action workflow="sync-azure-github" inputs='{"resource": "users"}'/>
+    Synchronizing Azure AD users to GitHub...
+  </template>
+</category>
+
+<category>
+  <pattern>SYNC GROUPS TO GITHUB</pattern>
+  <template>
+    <action workflow="sync-azure-github" inputs='{"resource": "groups"}'/>
+    Synchronizing Azure AD groups to GitHub teams...
+  </template>
+</category>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- HELP -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+<category>
+  <pattern>AZURE HELP</pattern>
+  <template>
+    📘 Azure AD Commands:
+    
+    TENANTS:
+    • create tenant [name]
+    • create [n] tenants
+    • list tenants
+    
+    USERS:
+    • create user [name]
+    • create [n] users
+    • create [n] users in [domain]
+    • list users
+    • delete user [name]
+    
+    GROUPS:
+    • create group [name]
+    • create [n] groups
+    • add [user] to group [group]
+    • list groups
+    
+    APPS:
+    • create app [name]
+    • list apps
+    
+    MASS PROVISIONING:
+    • deploy [t] tenants with [o] orgs and [u] users
+    • god mode [t] [o] [u]
+    
+    SYNC:
+    • sync azure to github
+    • sync users to github
+    • sync groups to github
+  </template>
+</category>
+
+<category>
+  <pattern>HELP AZURE</pattern>
+  <template>
+    <srai>AZURE HELP</srai>
+  </template>
+</category>
+
+</aiml>
