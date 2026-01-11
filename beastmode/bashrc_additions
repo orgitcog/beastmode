@@ -6,9 +6,36 @@ export BEASTMODE_HOME="$HOME/beastmode"
 # Add Beast Mode scripts to PATH
 export PATH="$BEASTMODE_HOME/scripts:$PATH"
 
-# Alias for quick access
+# Beast Mode CLI aliases
 alias beastmode='python3 $BEASTMODE_HOME/scripts/beastmode.py'
 alias bm='python3 $BEASTMODE_HOME/scripts/beastmode.py'
+
+# Graph Explorer CLI aliases
+alias graph-explorer='python3 $BEASTMODE_HOME/scripts/graph_explorer.py'
+alias ge='python3 $BEASTMODE_HOME/scripts/graph_explorer.py'
+alias gex='python3 $BEASTMODE_HOME/scripts/graph_explorer.py interactive'
+
+# Graph SDK aliases
+alias graph-sdk='python3 $BEASTMODE_HOME/scripts/graph_sdk.py'
+alias graph-code='python3 $BEASTMODE_HOME/scripts/graph_sdk.py --generate'
+
+# Azure Shell aliases
+alias azure-shell='python3 $BEASTMODE_HOME/scripts/azure_shell.py'
+alias az-shell='python3 $BEASTMODE_HOME/scripts/azure_shell.py'
+alias azsh='python3 $BEASTMODE_HOME/scripts/azure_shell.py interactive'
+
+# Org Sync toolkit
+alias org-sync='python3 $BEASTMODE_HOME/scripts/org_sync_toolkit.py'
+
+# Quick commands
+alias graph-users='python3 $BEASTMODE_HOME/scripts/graph_explorer.py users'
+alias graph-groups='python3 $BEASTMODE_HOME/scripts/graph_explorer.py groups'
+alias graph-apps='python3 $BEASTMODE_HOME/scripts/graph_explorer.py apps'
+alias graph-auth='python3 $BEASTMODE_HOME/scripts/graph_explorer.py auth'
+
+# Environment variables for Graph API
+export GRAPH_API_VERSION="v1.0"
+export GRAPH_API_ENDPOINT="https://graph.microsoft.com"
 
 # Show welcome message on first login
 if [ -f "$BEASTMODE_HOME/welcome.sh" ]; then

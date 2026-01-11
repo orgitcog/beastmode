@@ -1,5 +1,6 @@
 # Beast Mode - MS Graph & GitHub Enterprise Automation Toolkit
 # Based on Debian Bookworm for WebVM compatibility
+# Includes: Graph SDK, Graph Explorer CLI, PowerShell Core, Azure CLI tools
 FROM --platform=i386 i386/debian:bookworm
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -17,9 +18,12 @@ RUN apt-get -y install \
     file \
     fakeroot \
     git \
+    gnupg \
     hexedit \
     jq \
     less \
+    libicu72 \
+    libssl3 \
     lua5.4 \
     luajit \
     make \
@@ -27,29 +31,48 @@ RUN apt-get -y install \
     nano \
     netcat-openbsd \
     nodejs \
+    npm \
     patch \
     python3 \
     python3-pip \
     python3-venv \
     ruby \
+    sqlite3 \
     unzip \
     vim \
     wget \
     whiptail
 
-# Install Python packages for MS Graph and API operations
+# Install Python packages for MS Graph SDK and API operations
 RUN pip3 install --break-system-packages \
     requests \
     python-dotenv \
-    tabulate
+    tabulate \
+    rich \
+    httpx \
+    azure-identity \
+    msgraph-sdk \
+    msal \
+    pyjwt \
+    cryptography \
+    aiohttp
+
+# Install additional development tools
+RUN npm install -g \
+    @microsoft/microsoft-graph-types \
+    typescript \
+    ts-node
 
 # Create user
 RUN useradd -m user && echo "user:password" | chpasswd
 
-# Create Beast Mode toolkit directory
+# Create Beast Mode toolkit directory structure
 RUN mkdir -p /home/user/beastmode/scripts \
     && mkdir -p /home/user/beastmode/config \
-    && mkdir -p /home/user/beastmode/docs
+    && mkdir -p /home/user/beastmode/docs \
+    && mkdir -p /home/user/beastmode/graph-explorer \
+    && mkdir -p /home/user/beastmode/templates \
+    && mkdir -p /home/user/beastmode/cache
 
 # Copy Beast Mode toolkit files
 COPY --chown=user:user ./beastmode /home/user/beastmode/
@@ -66,6 +89,9 @@ RUN chown -R user:user /home/user/beastmode
 # Add Beast Mode to bashrc
 RUN cat /home/user/beastmode/bashrc_additions >> /home/user/.bashrc
 
+# Create Graph API configuration template
+RUN echo '{\n  "tenant_id": "",\n  "client_id": "",\n  "client_secret": "",\n  "scopes": ["https://graph.microsoft.com/.default"]\n}' > /home/user/beastmode/config/graph_config.json.template
+
 # Set working directory
 WORKDIR /home/user/
 
@@ -77,7 +103,9 @@ ENV HOME="/home/user" \
     EDITOR="vim" \
     LANG="en_US.UTF-8" \
     LC_ALL="C" \
-    BEASTMODE_HOME="/home/user/beastmode"
+    BEASTMODE_HOME="/home/user/beastmode" \
+    GRAPH_API_VERSION="v1.0" \
+    GRAPH_API_ENDPOINT="https://graph.microsoft.com"
 
 # Set root password
 RUN echo 'root:password' | chpasswd
